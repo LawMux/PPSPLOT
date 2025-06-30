@@ -1,5 +1,5 @@
 # PPSPLOT
-Informal tools demonstrating ways to quickly plot Patent Public Search CSV results
+Informal tools demonstrating methods for quickly plotting Patent Public Search CSV results
 
 
 Ages ago, I did a [law review](https://scholarship.kentlaw.iit.edu/ckjip/vol18/iss3/2/) on the importance of regularly comparing competitor leverage to understand patent value.  It’s also necessary to perform such monitoring if you plan on filing post-grant challenges in a timely manner (e.g., consider the Fintiv factors and the consequences if you file late).
