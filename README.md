@@ -43,6 +43,10 @@ For example, changing to the bar plot view and the "raw rows" filter produces th
 
 ![Basic publication plot](summary_plot.bmp)
 
+I also included some basic image export functionality so that you could excise graphs as follows:
+
+![Basic publication plot](CPCA.png)
+
 You certainly don't have to arrange things this way, it's just what I've found convenient.  This took me ~1 week of effort, so imagine what you can do if you put some real time into it for your organization.  Consider, e.g., integrating with other databases and review processes.
 
 As this is just a quick, perfunctory demo you certainly shouldn't rely upon the code in its original form (I always sanity check and verify manually).  
