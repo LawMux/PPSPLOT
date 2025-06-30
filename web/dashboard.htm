@@ -1,0 +1,838 @@
+<html>
+<!--
+(C) 2025 James Skelley
+GNU AFFERO GENERAL PUBLIC LICENSE (with disclaimer addition)
+
+See top-level LICENSE file for terms.
+
+For clarity, in accordance with Item 16 of the AGPL, THIS SOFTWARE IS PROVIDED
+BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+<head>
+
+<script src="../eel.js"></script>
+  <script src="jquery.js"></script>
+  <script src="d3.v4.js"></script>
+<script src="data_tools.js"></script>
+
+
+<style>
+body{
+
+  background-color:white;
+  margin: 0 auto;
+  font-size:12px;
+  min-height:0px;
+  box-sizing:border-box;
+  resize: both;
+}
+
+#main_container{
+position:absolute;
+left:0px;
+top:0px;
+height:100%;
+width:100%;
+display:flex;
+resize: both;
+}
+
+#group_container{
+  background-color:#ddd;
+  flex:0 0 300px;
+  display:flex;
+  flex-direction:column
+}
+
+#group_container_header{
+  flex:0 0 20px;
+  border-bottom:1px solid black;
+  margin: 5px;
+  text-align:center;
+  font-weight:bold
+
+}
+
+
+#group_container_list{
+  background-color:#ddd;
+  flex:1;
+  border:1px solid black;
+
+  margin:5px;
+  overflow-y:auto;
+}
+
+div.group_ele, div.group_ele_selected{
+
+background-color:red;
+border:1px solid black;
+width: 260px;
+margin:5px;
+opacity:0.7
+}
+
+div.group_ele:hover{
+cursor:pointer;
+opacity:0.9;
+border:1px solid #aaf
+}
+
+div.group_ele_selected{
+cursor:pointer;
+opacity:1;
+border:1px solid #f22
+}
+
+
+#results_container{
+  background-color:white;
+  flex:1;
+  flex-direction:column;
+  display:flex;
+}
+
+#results_container_top{
+border:1px solid black;
+margin:5px;
+flex:1;
+display:flex;
+flex-direction:column
+}
+
+
+
+#results_container_bottom{
+border:1px solid black;
+margin:5px;
+flex:1;
+display:flex;
+flex-direction:column
+}
+
+
+div.results_container_bottom_controls{
+overflow: auto;
+  flex:0 0 50px;
+  background-color:#ddd;
+
+}
+
+div.results_container_bottom_controls_button, div.results_container_bottom_controls_button_selected{
+  flex:1;
+  border:1px solid black;
+  margin:5px;
+  height:20px;
+  line-height:20px;
+  text-align:center;
+  cursor:pointer;
+}
+
+div.results_container_bottom_controls_button:hover{
+background-color:#def
+}
+div.results_container_bottom_controls_button_selected{
+  background-color:#9cf
+}
+
+#results_container_bottom_body{
+overflow: auto;
+  flex:1 1 0;
+  overflow:auto;
+}
+
+div.control_header{
+  font-weight:bold;
+  text-decoration:underline;
+  text-align:center;
+  margin-top:5px;
+}
+
+text {
+text-align:center;
+}
+
+
+table.group {
+  font-size:12px;
+  border-collapse: collapse;
+  width: 100%;
+  border: 0px solid black;
+}
+
+table.group td, table.group th {
+  border: 1px solid #000;
+}
+
+table.group tr:nth-child(even){background-color: #B9D9EB;}
+
+
+
+table.group th {
+  text-align: left;
+  background-color: #ddd; position: sticky; top: 0;
+  border:1px solid black;
+}
+
+
+</style>
+
+</head>
+<body>
+
+<div id="main_container">
+  <div id="group_container">
+
+  <div id="group_container_header">
+Groups From CSV Files
+  </div>
+  <div id="group_container_list">
+
+
+
+</div> <!-- group_container_list -->
+
+
+
+
+  </div> <!-- search container -->
+    <div id="results_container">
+
+      <div id="results_container_top">
+        <div style="flex:0 0 20px; border:1px solid black; border-radius:5px; background-color:#ddd">
+          <select id="select_plot_type">
+<option value=0 selected>Line</option>
+<option value=1 >Bar</option>
+
+<!--<option>Publication Date line</option>
+
+<option>Design patent Bar</option>
+-->
+          </select>
+          <button onclick="export_svg()">Export SVG</button>
+          <button onclick="export_png()">Export PNG</button>
+        </div>
+<div class="results_plot_box" style="flex:1 1 0; border:1px solid black; margin:5px; display:flex; flex-direction:row">
+  <div id="plot_controls" style="flex:0 0 150px; background-color:#ddd"> </div>
+  <div id="plot_box" style="flex:1 1 0"> </div>
+</div> <!-- results_plot_box -->
+
+
+      </div> <!-- results container top -->
+      <div id="results_container_bottom" >
+
+
+      </div> <!-- results container bottom -->
+
+
+    </div> <!-- results container -->
+
+
+</div> <!-- main container -->
+
+
+</body>
+
+
+<script>
+
+
+var GROUPS = {}
+var SELECTED_GROUP = ""
+var COLOR_WHEEL = ['#bccad6', '#8d9db6', '#667292', '#f1e3dd', '#cfe0e8', '#b7d7e8', '#87bdd8', '#daebe8']
+
+var LINE_PLOT_CONTROLS = null
+var BAR_PLOT_CONTROLS = null
+
+function refresh_groups(){
+
+var ele_holder = $('#group_container_list')
+ele_holder.html('')
+var holder = $('#results_container_bottom')
+holder.html('')
+
+
+var cnt = 0;
+Object.keys(GROUPS).forEach(key => {
+var d = $('<div class="group_ele" group_name="'+key+'"></div>')
+d.css('background-color', COLOR_WHEEL[cnt % COLOR_WHEEL.length])
+var dh = $('<div style="display: flex;flex-direction:row"></div>')
+var d1 = $('<div style="flex:1"></div>')
+var d11 = $('<div style="text-decoration:underline;font-weight:bold">'+key+'</div>')
+d1.append(d11)
+var d12 = $('<div>STATS</div>')
+d1.append(d12)
+dh.append(d1)
+var d2 = $('<div style="flex:0 0 20px; position:relative"></div>');
+var inp = $('<input style="margin: 0;   position: absolute;   top: 50%;  -ms-transform: translateY(-50%);  transform: translateY(-50%);" type="checkbox" checked></input>')
+
+
+inp.click(function(that, nm){ return function(){
+    GROUPS[nm]['PLOT_FLAG'] = that.is(':checked') ? 1 : 0
+
+    refresh_plot()
+}}(inp, key))
+
+d1.click(function(nm){ return function(){
+    focus_group(nm)
+}}(key))
+d2.append(inp)
+dh.append(d2)
+d.append(dh)
+ele_holder.append(d)
+cnt++
+
+   })
+
+}
+
+
+
+function create_line_plot_controls(){
+
+var ans = $('<div></div>')
+
+
+  ans.append('<div class="control_header">Select Plot Type</div>')
+  var rs_div = $('<div style="border:1px solid black"></div>')
+  var lst = ['Cumulative Filed', 'Cumulative Published']
+  for(var i = 0; i < lst.length; i++){
+    var sel = i == 0 ? "checked" : "";
+
+    var d = $('<div>'+lst[i]+'</div>')
+    var inp = $('<input type="radio" name="line_type_radio" value='+i+' '+sel+'/>')
+    d.prepend(inp)
+    inp.on('change', ()=>{$('#reset_range').click()})
+    rs_div.append(d)
+  }
+  ans.append(rs_div)
+
+  ans.append('<div class="control_header">Restrict Range</div>')
+  var sel_div = $('<div style="border:1px solid black"></div>')
+  var d = $('<div></div>')
+  var inp = $('<input type="date" id="range_start_date" name="date_range">')
+  inp.on('change',()=>{refresh_plot()})
+  d.append(inp)
+  sel_div.append(d)
+  var d = $('<div></div>')
+  var inp = $('<input type="date" id="range_stop_date" name="date_range">')
+  inp.on('change',()=>{refresh_plot()})
+  d.append(inp)
+    sel_div.append(d)
+  ans.append(sel_div)
+
+var d = $('<div style="text-align:center"></div>');
+var b = $('<button id="reset_range" style="cursor:pointer">RESET</button>')
+b.click(()=>{
+  $('#range_start_date').val('')
+  $('#range_stop_date').val('')
+    refresh_plot()
+})
+d.append(b)
+ans.append(d)
+
+
+return ans
+
+}
+
+function create_bar_plot_controls(){
+
+  var ans = $('<div></div>')
+
+  ans.append('<div class="control_header">Select Plot Type</div>')
+  var rs_div = $('<div style="border:1px solid black"></div>')
+  var lst = ['TOTAL', 'CPCI', 'CPCA', 'OR', 'XREF', 'FAMILIES']
+  for(var i = 0; i < lst.length; i++){
+    var sel = i == 0 ? "checked" : "";
+    var d = $('<div>'+lst[i]+'</div>')
+    var inp = $('<input type="radio" name="bar_type_radio" value="'+lst[i]+'" '+sel+'/>')
+    d.prepend(inp)
+      inp.on('change', ()=>{refresh_plot()})
+    rs_div.append(d)
+  }
+
+  ans.append(rs_div)
+
+  ans.append('<div class="control_header">Select Code Level(s)</div>')
+  var cnt_div = $('<div style="border:1px solid black"></div>')
+  cnt_div.append('<label for="quantity">Min:</label>')
+  cnt_div.append('<input id="bar_control_code_lvl_min" type="number" id="quantity" name="quantity" min="1" max="5" value=1 />')
+  cnt_div.find('input').last().on('change',()=>{refresh_plot()})
+  cnt_div.append('<label for="quantity">Max:</label>')
+  cnt_div.append('<input id="bar_control_code_lvl_max"type="number" id="quantity" name="quantity" min="1" max="15" value=5 />')
+    cnt_div.find('input').last().on('change',()=>{refresh_plot()})
+  ans.append(cnt_div)
+
+
+  ans.append('<div class="control_header">Select Order</div>')
+  var sel_div = $('<div style="border:1px solid black"></div>')
+  sel_div.append('<div><label>High->Low:</label><input name="lowest_highest" type="radio" value=1 checked/></div><div><label>Low->High:</label><input name="lowest_highest" type="radio" value=0 /></div>')
+  sel_div.find('input').on('change',()=>{refresh_plot()})
+  ans.append(sel_div)
+
+  ans.append('<div class="control_header">Select Count</div>')
+  var cnt_div = $('<div style="border:1px solid black"></div>')
+  cnt_div.append('<label for="quantity">Restrict to:</label>')
+
+  cnt_div.append('<input id="bar_control_code_cnt" type="number" id="quantity" name="quantity" min="0" max="100" value=20 />')
+  cnt_div.find('input').last().on('change',()=>{refresh_plot()})
+  ans.append(cnt_div)
+
+
+
+    return ans
+
+}
+
+
+function refresh_plot(){
+  $('#plot_box').html('')
+  var group_data = DATA_TOOLS_retrieve_filtered_group_rows()
+
+  if(LINE_PLOT_CONTROLS === null){
+  LINE_PLOT_CONTROLS = create_line_plot_controls()
+  $('#plot_controls').append(LINE_PLOT_CONTROLS)
+  }
+  if(BAR_PLOT_CONTROLS === null){
+  BAR_PLOT_CONTROLS = create_bar_plot_controls()
+  $('#plot_controls').append(BAR_PLOT_CONTROLS)
+  }
+  $('#select_plot_type').find(":selected").val() == 0 ? plot_line(group_data) : plot_bar(group_data)
+
+}
+
+
+function export_png(){
+
+  var svg = $("#results_container_top").find("svg")[0]
+
+  var d_head = 'data:image/svg+xml;charset=utf-8'
+
+
+  var encodeAsUTF8 = s => `${d_head},${encodeURIComponent(s)}`
+
+    var svgData = encodeAsUTF8((new XMLSerializer()).serializeToString(svg))
+
+
+      var img = document.createElement('img')
+      img.onload = function() {
+
+
+            var canvas = document.createElement('canvas')
+            canvas.width = svg.clientWidth * 3
+            canvas.height = svg.clientHeight * 3
+            var ctx = canvas.getContext('2d')
+            ctx.beginPath();
+            ctx.fillStyle = "#fff";
+            ctx.rect(0, 0, canvas.width , canvas.height);
+            ctx.fill();
+            ctx.drawImage(img, 0, 0, canvas.width , canvas.height)
+
+            var d = $('<a href="'+canvas.toDataURL('image/png', 1.0)+'" download="img.png"></a>')
+
+
+            d[0].click()
+      }
+      img.src = svgData
+
+
+
+
+
+
+
+
+}
+
+
+
+function export_svg(){
+
+  var svg = $("#results_container_top").find("svg")[0]
+
+
+
+  var str = (new XMLSerializer()).serializeToString(svg);
+
+
+
+  var url = "data:image/svg+xml;charset=utf-8,"+encodeURIComponent('<?xml version="1.0" standalone="no"?>\r\n' + str);
+
+
+
+var d = $('<a href="'+url+'" download="img.svg">adsf</a>')
+
+
+d[0].click()
+
+}
+
+
+function focus_group(nm){
+
+
+$('#results_container_bottom').html('')
+
+$('#group_container_list  div.group_ele_selected').removeClass('group_ele_selected').addClass('group_ele')
+
+if(nm == SELECTED_GROUP){
+  SELECTED_GROUP = ""
+  return;
+}
+
+SELECTED_GROUP = nm
+
+$('#group_container_list  div[group_name="'+nm+'"]').removeClass('group_ele').addClass('group_ele_selected')
+
+//HEADER
+var controls = $('<div class="results_container_bottom_controls" style="background-color:'+GROUPS[nm]['COLOR']+'"></div>')
+var controls_top = $('<div style="flex:1; text-align:left">Group Name:<span style="font-weight:bold; text-decoration:underline; text-align:right">'+nm+'</span></div>')
+var controls_bottom = $('<div style="  display:flex;flex-direction:row;"></div>')
+controls.append(controls_top)
+controls.append(controls_bottom)
+
+var lst = ['APP TYPE',
+//'DATE', revisit this if useful
+'CPCI',
+'CPCA',
+'OR',
+'XREF',
+'ROWS AS FILTERED']
+
+lst.forEach((i, ind)=>{
+  var c = ind == lst.length - 1 ? 'results_container_bottom_controls_button_selected' : 'results_container_bottom_controls_button'
+
+  var d = ind == lst.length - 1 ? $('<div class="'+c+'">ROWS AS FILTERED</div>') : $('<div class="'+c+'">'+i+' FILTER</div>')
+  d.click(((dd, func, type, grp_nm)=>{return ()=>{
+    var non_sel = 'results_container_bottom_controls_button'
+    var sel = 'results_container_bottom_controls_button_selected'
+    $('.' + sel).removeClass(sel).addClass(non_sel)
+    dd.removeClass(non_sel).addClass(sel)
+    $('#results_container_bottom_body').html('')
+    $('#results_container_bottom_body').append(DATA_TOOLS_get_filter_ele(type, grp_nm))
+
+  }})(d, i[1], i, nm))
+  controls_bottom.append(d)
+})
+
+
+$('#results_container_bottom').append(controls)
+$('#results_container_bottom').append($('<div id="results_container_bottom_body"></div>'))
+$('.results_container_bottom_controls_button_selected').click()
+
+
+
+
+
+
+//END BODY
+
+}
+
+$(document).ready(function(){
+
+  eel.retrieve_groups()(function(d){
+  GROUPS = d
+
+  var color_cnt = 0
+  Object.keys(GROUPS).forEach(k=>{
+  GROUPS[k]['PLOT_FLAG'] = 1
+  GROUPS[k]['FILTERS'] = {'APP_TYPE': [], 'DATE': [], 'CPCI': [], 'CPCA': [], 'OR': [], 'XREF': [], 'ROWS':[]}
+  GROUPS[k]['COLOR'] = COLOR_WHEEL[color_cnt]
+  color_cnt = (color_cnt + 1) % COLOR_WHEEL.length
+
+  })
+
+refresh_groups()
+
+  $('#select_plot_type').change(function(){
+  refresh_plot()
+  })
+  $('#select_plot_type').trigger('change')
+
+
+
+  })
+
+
+})
+
+
+function plot_bar(group_data){
+
+  LINE_PLOT_CONTROLS.hide()
+    BAR_PLOT_CONTROLS.show()
+
+refresh_plot_bar(group_data)
+
+}
+
+function refresh_plot_bar(group_data){
+
+
+  items = []
+  $("#plot_box").html('')
+  var con_ele = $("#plot_box");
+
+    var margin = {top: 30, right: 200, bottom: 20, left: 45},
+        width = con_ele.width() - margin.left - margin.right,
+        height = con_ele.height() - margin.top - margin.bottom;
+
+    var svg = d3.select("#plot_box")
+      .append("svg")
+        .attr("width", con_ele.width())
+        .attr("height", con_ele.height())
+      .append("g")
+        .attr("transform",
+              "translate(" + margin.left + "," + margin.top + ")");
+
+
+var type = $('input[name=bar_type_radio]:checked').val()
+
+
+var the_func = ()=> 1
+
+if(type == "TOTAL")
+the_func = ()=> DATA_TOOLS_get_TOTAL_data(group_data)
+else if(type == "FAMILIES")
+the_func = ()=> DATA_TOOLS_get_FAMILIES_data(group_data)
+else
+the_func = ()=> DATA_TOOLS_get_CODE_data(group_data, type, $('#bar_control_code_lvl_min').val(), $('#bar_control_code_lvl_max').val(), $('input[name="lowest_highest"]:checked').val(), $('#bar_control_code_cnt').val())
+
+
+
+    var {'max': max_val, 'data':data} = the_func()
+
+    var subgroups = Object.keys(group_data)
+    var cols = []
+    Object.keys(group_data).forEach(k =>{
+      cols.push(group_data[k]['COLOR'])
+    })
+
+
+      var groups = d3.map(data, function(d){return(d.group)}).keys()
+
+
+      var x = d3.scaleBand()
+          .domain(groups)
+          .range([0, width])
+          .padding([0.2])
+      svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x).tickSize(0));
+
+
+      var y = d3.scaleLinear()
+        .domain([0, max_val])
+        .range([ height, 0 ]);
+      svg.append("g")
+        .call(d3.axisLeft(y));
+
+      var group_sub = d3.scaleBand()
+        .domain(subgroups)
+        .range([0, x.bandwidth()])
+        .padding([0.05])
+
+      var color = d3.scaleOrdinal()
+        .domain(subgroups)
+        .range(cols)
+
+      var g = svg.append("g")
+        .selectAll("g")
+        .data(data)
+        .enter()
+        .append("g")
+          .attr("transform", function(d) { return "translate(" + x(d.group) + ",0)"; })
+        .selectAll("rect")
+        .data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key]}; }); })
+        .enter().append("g")
+
+      g.append("rect")
+          .attr("x", function(d) { return group_sub(d.key); })
+          .attr("y", function(d) { return y(d.value); })
+          .attr("width", group_sub.bandwidth())
+          .attr("height", function(d) { return height - y(d.value); })
+          .attr("fill", function(d) { return color(d.key); })
+
+      g.append("text")
+    .attr("x", function(d) { return group_sub(d.key) + group_sub.bandwidth() / 2})
+    .attr("text-anchor", "middle")
+    .attr("y", function(d) { return  y(d.value) - 5; })
+    .text(function(d) { return d.value; })
+
+
+
+
+var key_data = []
+
+for (const [k, v] of Object.entries(group_data)) {
+  var txt = k
+  if(k.length > 20)
+  txt = txt.substr(0, 20) + '. . . '
+  key_data.push({'txt':txt, 'color':v['COLOR']})
+}
+
+
+
+
+var size = 20
+var X_POS = con_ele.width()-margin.right
+var Y_POS = 10
+svg.selectAll("the_legend")
+  .data(key_data)
+  .enter()
+  .append("rect")
+    .attr("x", X_POS)
+    .attr("y", function(d,i){ return Y_POS + i*(size+5)})
+    .attr("width", size)
+    .attr("height", size)
+    .style("fill", function(d){ return d['color']})
+
+svg.selectAll("mylabels")
+  .data(key_data)
+  .enter()
+  .append("text")
+    .attr("x", X_POS + size*1.2)
+    .attr("y", function(d,i){ return Y_POS + i*(size+5) + (size/2 + 4)})
+    .style("fill", function(d){ return '#000'})
+    .text(function(d){ return d['txt']})
+    .attr("text-anchor", "left")
+    .style("alignment-baseline", "middle")
+
+}
+
+
+
+function plot_line(group_data){
+
+    LINE_PLOT_CONTROLS.show()
+      BAR_PLOT_CONTROLS.hide()
+
+  refresh_plot_line(group_data)
+}
+
+function refresh_plot_line(group_data){
+
+  $("#plot_box").html('')
+  var ele_id = "#plot_box"
+  items = []
+  var con_ele = $(ele_id);
+
+    var margin = {top: 10, right: 200, bottom: 20, left: 45},
+        width = con_ele.width() - margin.left - margin.right,
+        height = con_ele.height() - margin.top - margin.bottom;
+
+
+    var svg = d3.select(ele_id)
+      .append("svg")
+      .attr("width", con_ele.width())
+        .attr("height", con_ele.height())
+      .append("g")
+        .attr("transform",
+              "translate(" + margin.left + "," + margin.top + ")");
+
+
+var typ = $('input[name=line_type_radio]:checked').val() == 0 ? "Filing Date": "Date Published";
+var [data, start_date, stop_date] = DATA_TOOLS_get_CUMULATIVE_data(group_data, typ, [$('#range_start_date').val(), $('#range_stop_date').val()])
+
+if($('#range_start_date').val() == '')
+$('#range_start_date').val(DATA_TOOLS_make_jdate(start_date))
+if($('#range_stop_date').val() == '')
+$('#range_stop_date').val(DATA_TOOLS_make_jdate(stop_date))
+
+          var cols = {}
+          Object.keys(group_data).forEach(k =>{
+            cols[k] = group_data[k]['COLOR']
+          })
+
+              var sumstat = d3.nest()
+                .key(function(d) { return d.name;})
+                .entries(data);
+
+              var x = d3.scaleTime()
+                .domain([start_date, stop_date])
+                .range([ 0, width ]);
+
+              svg.append("g")
+              .classed('x axis', true)
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%m/%d/%Y")));
+
+              var y = d3.scaleLinear()
+                .domain([0, d3.max(data, function(d) { return +d.n; })])
+                .range([ height, 0 ]);
+              svg.append("g")
+                .call(d3.axisLeft(y));
+
+
+              svg.selectAll(".line")
+                  .data(sumstat)
+                  .enter()
+                  .append("path")
+                  .attr("class", "line")
+                    .attr("fill", 'none')
+                    .attr("stroke", function(d){ return cols[d.key] })
+                    .attr("stroke-width", 1.5)
+                    .attr("d", function(d){
+                      return d3.line()
+                        .x(function(d) {  return x(new Date(d['date'])) })
+                        .y(function(d) { return y(+d.n); })
+                        (d.values)
+                    })
+
+
+///////LEGEND
+
+                    var key_data = []
+
+                    for (const [k, v] of Object.entries(group_data)) {
+                      var txt = k
+                      if(k.length > 20)
+                      txt = txt.substr(0, 20) + '. . . '
+                      key_data.push({'txt':txt, 'color':v['COLOR']})
+                    }
+
+
+                    var size = 20
+                    var X_POS = con_ele.width()-margin.right
+                    var Y_POS = 10
+                    svg.selectAll("the_legend")
+                      .data(key_data)
+                      .enter()
+                      .append("rect")
+                        .attr("x", X_POS)
+                        .attr("y", function(d,i){ return Y_POS + i*(size+5)})
+                        .attr("width", size)
+                        .attr("height", size)
+                        .style("fill", function(d){ return d['color']})
+
+
+                    svg.selectAll("mylabels")
+                      .data(key_data)
+                      .enter()
+                      .append("text")
+                        .attr("x", X_POS + size*1.2)
+                        .attr("y", function(d,i){ return Y_POS + i*(size+5) + (size/2 + 4)})
+                        .style("fill", function(d){ return '#000'})
+                        .text(function(d){ return d['txt']})
+                        .attr("text-anchor", "left")
+                        .style("alignment-baseline", "middle")
+
+}
+
+
+
+</script>
+
+
+
+</html>
