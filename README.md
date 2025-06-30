@@ -2,7 +2,7 @@
 Informal tools demonstrating methods for quickly plotting Patent Public Search CSV results
 
 
-Ages ago, I did a [law review](https://scholarship.kentlaw.iit.edu/ckjip/vol18/iss3/2/) on the importance of regularly comparing competitor leverage to understand patent value.  It’s also necessary to perform such monitoring if you plan on filing post-grant challenges in a timely manner (e.g., consider the Fintiv factors and the consequences if you file late).
+Ages ago, I did a [law review article](https://scholarship.kentlaw.iit.edu/ckjip/vol18/iss3/2/) on the importance of regularly comparing competitor leverage to understand patent value.  It’s also necessary to perform such monitoring if you plan on filing post-grant challenges in a timely manner (e.g., consider the Fintiv factors and the consequences if you file late).
 
 Rather than work with the USPTO’s API or Bulk Data, it’s often more accessible for folks to do these reviews with the USPTO's [Patent Public Search (PPS) system](https://www.uspto.gov/patents/search/patent-public-search).
 
