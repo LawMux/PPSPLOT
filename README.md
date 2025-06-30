@@ -31,12 +31,13 @@ In this demonstration, all I’ve done is:
 2)	Used Python to read the CSVs into JSON, consolidate with the code data, and present in a browser interface via eel, wherein D3.js is then used to present pretty visualizations based upon filter selections
 3)	Provided some generic SVG and PNG export code you can export the results.
 
-In short, per the below image:
+In short, per the below images:
 * The left-most column lists groups based upon the CSV files in csv_repo;
 * The top-right region shows the current plot (one of line or bar) with corresponding display parameters; and
 * The bottom-right region shows the currently selected CSV file from the left column, with a variety of filters for isolating results of interest.
 
 ![Basic publication plot](simple_time.bmp)
+![Basic publication plot](CPC_Filter.bmp)
 
 For example, changing to the bar plot view and the "raw rows" filter produces the following view:
 
