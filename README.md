@@ -49,7 +49,7 @@ I also included some basic image export functionality so that you could excise g
 
 You certainly don't have to arrange things this way, it's just what I've found convenient.  This took me ~1 week of effort, so imagine what you can do if you put some real time into it for your organization.  Consider, e.g., integrating with other databases and review processes.
 
-As this is just a quick, perfunctory demo you certainly shouldn't rely upon the code in its original form (I always sanity check and verify manually).  
+As this is just a quick, perfunctory demo you certainly shouldn't rely upon the code in its original form (I always sanity check and verify manually).  For example, I just took the most current CPC codes from the above sources to create my sqlite database, but those codes may not apply for very old assets, and will likely change in the future (you've been warned!).
 
 (C) 2025 James Skelley
 GNU AFFERO GENERAL PUBLIC LICENSE (with disclaimer addition)
