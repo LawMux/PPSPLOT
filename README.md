@@ -44,6 +44,21 @@ For example, changing to the bar plot view and the "raw rows" filter produces th
 
 You certainly don't have to arrange things this way, it's just what I've found convenient.  This took me ~1 week of effort, so imagine what you can do if you put some real time into it for your organization.  Consider, e.g., integrating with other databases and review processes.
 
+As this is just a quick, perfunctory demo you certainly shouldn't rely upon the code in its original form (I always sanity check and verify manually).  
 
+(C) 2025 James Skelley
+GNU AFFERO GENERAL PUBLIC LICENSE (with disclaimer addition)
+
+See top-level LICENSE file for terms.
+
+For clarity, in accordance with Item 16 of the AGPL, THE COPYRIGHT HOLDER OR ANY
+OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM AS PERMITTED ABOVE, PROVIDES
+THE PROGRAM ON AN "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING, WIHTOUT LIMITATION, ANY WARRANTIES OR
+CONDITIONS OF TITLE, NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR
+PURPOSE.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
 
 
