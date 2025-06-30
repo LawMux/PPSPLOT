@@ -16,7 +16,7 @@ For example, let’s say you want to compare recent publications for Waymo, Tesl
 * (@py>"2023") and ("Tesla").AANM.
 * (@py>"2023") and ("Nuro").AANM.
 
-I’ve exported and included those results (as of 06/29/2025) into the “./repo_csvs” of this repository:
+I’ve exported and included those results (as of 06/29/2025; with some minor and superficial data cleaning) into the “./repo_csvs” of this repository:
 
 * Nuro_2023.csv
 * Tesla_2023.csv
