@@ -34,7 +34,7 @@ In this demonstration, all I’ve done is:
 In short, per the below image:
 * The left-most column lists groups based upon the CSV files in csv_repo;
 * The top-right region shows the current plot (one of line or bar) with corresponding display parameters; and
-* the bottom-right region shows the currently selected CSV file from the left column, with a variety of filters for isolating results of interest.
+* The bottom-right region shows the currently selected CSV file from the left column, with a variety of filters for isolating results of interest.
 
 ![Basic publication plot](simple_time.bmp)
 
