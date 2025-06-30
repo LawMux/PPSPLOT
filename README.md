@@ -12,15 +12,15 @@ Thus, this repository is a “proof of concept” demonstrating how easily you c
 
 For example, let’s say you want to compare recent publications for Waymo, Tesla, and Nuro after 2023.  In PPS, that’s (taking a naïve, superficial approach - in a real analysis, you'd need to include holding companies, etc.):
 
-(@py>"2023") and ("Waymo").AANM.
-(@py>"2023") and ("Tesla").AANM.
-(@py>"2023") and ("Nuro").AANM.
+* (@py>"2023") and ("Waymo").AANM.
+* (@py>"2023") and ("Tesla").AANM.
+* (@py>"2023") and ("Nuro").AANM.
 
 I’ve exported and included those results (as of 06/29/2025) into the “./repo_csvs” of this repository:
 
-Nuro_2023.csv
-Tesla_2023.csv
-Waymo_2023.csv
+* Nuro_2023.csv
+* Tesla_2023.csv
+* Waymo_2023.csv
 
 
 In this demonstration, all I’ve done is:
