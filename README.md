@@ -1,5 +1,5 @@
 # PPSPLOT
-Informal demonstration tools to quickly plot Patent Public Search CSV results
+Informal tools demonstrating ways to quickly plot Patent Public Search CSV results
 
 
 Ages ago, I did a [law review](https://scholarship.kentlaw.iit.edu/ckjip/vol18/iss3/2/) on the importance of regularly comparing competitor leverage to understand patent value.  It’s also necessary to perform such monitoring if you plan on filing post-grant challenges in a timely manner (e.g., consider the Fintiv factors and the consequences if you file late).
@@ -31,9 +31,18 @@ In this demonstration, all I’ve done is:
 3)	Use Python to read the CSVs into JSON, consolidate with the code data, and present in a browser interface via eel, wherein D3.js is then used to present pretty visualizations based upon filter selections
 4)	Provide some generic SVG and PNG export code you can export the results.
 
+In short, per the below image:
+* The left-most column lists groups based upon the CSV files in csv_repo;
+* The top-right region shows the current plot (one of line or bar) with corresponding display parameters; and
+* the bottom-right region shows the currently selected CSV file from the left column, with a variety of filters for isolating results of interest.
+
 ![Basic publication plot](simple_time.bmp)
 
-This took me ~1 week of effort, so imagine what you can do if you put some real time into it for your organization.
+For example, changing to the bar plot view and the "raw rows" filter produces the following view:
+
+![Basic publication plot](summary_plot.bmp)
+
+You certainly don't have to arrange things this way, it's just what I've found convenient.  This took me ~1 week of effort, so imagine what you can do if you put some real time into it for your organization.  Consider, e.g., integrating with other databases and review processes.
 
 
 
