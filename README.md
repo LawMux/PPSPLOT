@@ -29,7 +29,9 @@ In this demonstration, all I’ve done is:
 a.	https://www.cooperativepatentclassification.org/cpcSchemeAndDefinitions/bulk
 b.	https://www.uspto.gov/web/patents/classification/uspcd*/schedd*.htm 
 2)	Use Python to read the CSVs into JSON, consolidate with the code data, and present in a browser interface via eel, wherein D3.js is then used to present pretty visualizations based upon filter selections
-3)	Provide some generic SVG and PNG export code you can export the results. 
+3)	Provide some generic SVG and PNG export code you can export the results.
+
+![Basic publication plot](simple_time.bmp)
 
 This took me ~1 week of effort, so imagine what you can do if you put some real time into it for your organization.
 
