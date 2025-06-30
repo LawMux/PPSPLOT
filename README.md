@@ -28,7 +28,7 @@ In this demonstration, all I’ve done is:
 1)	Consolidated CPC and Design codes into a convenient little sqlite database from:
   - a.	https://www.cooperativepatentclassification.org/cpcSchemeAndDefinitions/bulk
   - b.	https://www.uspto.gov/web/patents/classification/uspcd*/schedd*.htm 
-2)	Used Python to read the CSVs into JSON, consolidate with the code data, and present in a browser interface via eel, wherein D3.js is then used to present pretty visualizations based upon filter selections
+2)	Used Python to read the CSVs into JSON, consolidate with the code data, and present in a browser interface via eel, wherein D3.js and JQuery are then used to present pretty visualizations based upon filter selections
 3)	Provided some generic SVG and PNG export code you can export the results.
 
 In short, per the below images:
